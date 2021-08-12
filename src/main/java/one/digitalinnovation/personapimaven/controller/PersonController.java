@@ -4,6 +4,7 @@ package one.digitalinnovation.personapimaven.controller;
 import one.digitalinnovation.personapimaven.dto.request.PersonDTO;
 import one.digitalinnovation.personapimaven.dto.response.MessageResponseDTO;
 import one.digitalinnovation.personapimaven.entity.Person;
+import one.digitalinnovation.personapimaven.exeception.PersonNotFoundExeception;
 import one.digitalinnovation.personapimaven.repository.PersonRepository;
 import one.digitalinnovation.personapimaven.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,24 @@ public class PersonController {
        return personService.listAll();
     }
 
+    @GetMapping("/{id}")
+    public PersonDTO findByID(@PathVariable Long id) throws PersonNotFoundExeception {
+        return personService.findByID(id);
+
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteById(@PathVariable Long id) throws PersonNotFoundExeception {
+        personService.delete(id);
+
+
+    }
+
 }
+
+
+
+
 
 

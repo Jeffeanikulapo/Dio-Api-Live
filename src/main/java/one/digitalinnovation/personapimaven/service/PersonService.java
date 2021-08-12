@@ -4,12 +4,14 @@ package one.digitalinnovation.personapimaven.service;
 import one.digitalinnovation.personapimaven.dto.request.PersonDTO;
 import one.digitalinnovation.personapimaven.dto.response.MessageResponseDTO;
 import one.digitalinnovation.personapimaven.entity.Person;
+import one.digitalinnovation.personapimaven.exeception.PersonNotFoundExeception;
 import one.digitalinnovation.personapimaven.mapper.PersonMapper;
 import one.digitalinnovation.personapimaven.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,28 +22,50 @@ public class PersonService {
     private final PersonMapper personMapper = PersonMapper.INSTANCE;
 
     @Autowired
-    public  PersonService(PersonRepository personRepository){
+    public PersonService(PersonRepository personRepository) {
         this.personRepository = personRepository;
 
     }
 
-    public MessageResponseDTO createPerson(PersonDTO personDTO){
+    public MessageResponseDTO createPerson(PersonDTO personDTO) {
         Person personToSave = personMapper.toModel(personDTO);
 
 
         Person savedPerson = personRepository.save(personToSave);
-        return  MessageResponseDTO
+        return MessageResponseDTO
                 .builder()
                 .message("Created person with ID" + savedPerson.getId())
                 .build();
 
     }
 
-    public List<PersonDTO> listAll(){
+    public List<PersonDTO> listAll() {
         List<Person> allPeope = personRepository.findAll();
         return allPeope.stream()
                 .map(personMapper::toDTO)
                 .collect(Collectors.toList());
 
     }
+
+    public PersonDTO findByID(Long id) throws PersonNotFoundExeception {
+        Person person = verifyIfExists(id);
+
+
+        return personMapper.toDTO(person);
+    }
+
+
+    public void delete(Long id) throws PersonNotFoundExeception {
+        verifyIfExists(id);
+
+        personRepository.deleteById(id);
+    }
+
+
+
+    private Person verifyIfExists(Long id) throws PersonNotFoundExeception {
+        return personRepository.findById(id)
+                .orElseThrow(() -> new PersonNotFoundExeception(id));
+    }
+
 }
