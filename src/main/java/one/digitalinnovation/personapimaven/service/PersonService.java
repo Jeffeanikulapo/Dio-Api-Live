@@ -1,6 +1,7 @@
 package one.digitalinnovation.personapimaven.service;
 
 
+import lombok.AllArgsConstructor;
 import one.digitalinnovation.personapimaven.dto.request.PersonDTO;
 import one.digitalinnovation.personapimaven.dto.response.MessageResponseDTO;
 import one.digitalinnovation.personapimaven.entity.Person;
@@ -15,6 +16,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor(onConstructor = @__(@Autowired) )
 public class PersonService {
 
     private PersonRepository personRepository;
